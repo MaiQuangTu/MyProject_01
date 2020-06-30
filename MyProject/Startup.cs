@@ -1,21 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MyProject.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AutoWrapper;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MyProject.Data;
+//using MyProject.Middleware;
+using MyProject.Models;
+using MyProject.Models.Dto;
 
 namespace MyProject
 {
@@ -33,34 +35,37 @@ namespace MyProject
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("SQLServerConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-            //var secret = Configuration["JwtConfig:Secret"];
-            //var key = Encoding.ASCII.GetBytes(secret);
-
-            //services.AddAuthentication()
-            ////.AddWsFederation(options =>
-            ////{
-            ////    options.Wtrealm = Configuration["AdfsConfig:Wtrealm"];
-            ////    options.Wreply = Configuration["AdfsConfig:Wtrealm"] + "signin-wsfed";
-            ////    options.MetadataAddress = Configuration["AdfsConfig:MetadataAddress"];
-            ////})
-            //.AddJwtBearer(x =>
-            //{
-            //    x.RequireHttpsMetadata = false;
-            //    x.SaveToken = true;
-            //    x.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = new SymmetricSecurityKey(key),
-            //        ValidateIssuer = false,
-            //        ValidateAudience = false
-            //    };
-            //});
-
+            var secret = Configuration["Jwt:Secret"];
+            var key = Encoding.ASCII.GetBytes(secret);
+            services.AddControllersWithViews();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+           .AddJwtBearer(options =>
+           {
+               options.RequireHttpsMetadata = false;
+               options.SaveToken = true;
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = true,
+                   ValidateAudience = true,
+                   ValidateLifetime = true,
+                   ValidateIssuerSigningKey = true,
+                   ValidIssuer = Configuration["Jwt:Issuer"],
+                   ValidAudience = Configuration["Jwt:Audience"],
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecretKey"])),
+                   ClockSkew = TimeSpan.Zero
+               };
+               services.AddCors();
+           });
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
+                config.AddPolicy(Policies.User, Policies.UserPolicy());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc(name: "v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -84,17 +89,8 @@ namespace MyProject
                     new string[] { }
                 }
                 });
-
-                // XML Documentation
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
-
                 c.EnableAnnotations();
             });
-
-            services.AddControllersWithViews();
-            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -121,12 +117,7 @@ namespace MyProject
                 c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "My Project");
                 c.RoutePrefix = string.Empty;
             });
-            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions
-            {
-                IsApiOnly = false,
-                ShowApiVersion = true,
-                ShowStatusCode = true,
-            });
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

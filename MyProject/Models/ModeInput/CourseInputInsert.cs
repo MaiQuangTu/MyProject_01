@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyProject.Models.Dto
+namespace MyProject.Models.ModeInput
 {
-    public class Course
+    public class CourseInputInsert
     {
-        [Key]
-        public int Id { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
         public string Level { get; set; }
@@ -19,6 +16,9 @@ namespace MyProject.Models.Dto
         public DateTime TimeStarCourse { get; set; }
         public DateTime Total { get; set; }
         public int MaxStudent { get; set; }
+        public bool? IsDelete { get; set; }
+        public int? CreateUser { get; set; }
         public DateTime CreateDate { get; set; }
+        public int? ModifyUser { get; set; }
     }
 }

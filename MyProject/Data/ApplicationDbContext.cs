@@ -35,6 +35,8 @@ namespace MyProject.Data
         public DbSet<Student> Student { get; set; }
         public DbSet<Teacher> Teacher { get; set; }
         public DbSet<Course> Course { get; set; }
+        public DbSet<StudentAdviser> StudentAdviser { get; set; }
+        public DbSet<StudentCourse> StudentCourse { get; set; }
 
 
         public override int SaveChanges()

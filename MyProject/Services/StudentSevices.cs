@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyProject.Data;
+using MyProject.HandleException;
 using MyProject.Models.Dto;
 using MyProject.Models.ModeInput;
 using MyProject.Models.ModelResult;
@@ -43,7 +44,7 @@ namespace MyProject.Services
                         Name = student.Name,
                         gender = student.gender,
                         DateOfBirth = student.DateOfBirth,
-                        express = student.express,
+                        address = student.address,
                         Point = student.Point
                     };
                     StudentResults.Add(StudentView);
@@ -77,7 +78,7 @@ namespace MyProject.Services
                         Name = student.Name,
                         gender = student.gender,
                         DateOfBirth = student.DateOfBirth,
-                        express = student.express,
+                        address = student.address,
                         Point = student.Point
                     };
                     StudentResults.Add(StudentView);
@@ -93,7 +94,7 @@ namespace MyProject.Services
             student.Name = model.Name;
             student.gender = model.gender;
             student.DateOfBirth = model.DateOfBirth;
-            student.express = model.express;
+            student.address = model.address;
             student.IsDelete = model.IsDelete;
 
 
@@ -109,10 +110,9 @@ namespace MyProject.Services
                 student.Name = model.Name;
                 student.gender = model.gender;
                 student.DateOfBirth = model.DateOfBirth;
-                student.express = model.express;
+                student.address = model.address;
                 student.IsDelete = model.IsDelete;
 
-                student.ModifyUser = userId;
                 _context.SaveChanges();
             }
         }
@@ -127,6 +127,45 @@ namespace MyProject.Services
             }
         }
 
+        public void AddStudentAdviser(string userName, int teacherId)
+        {
+
+            var student = _context.Student.Where(p => String.Equals(p.UserName, userName, StringComparison.CurrentCultureIgnoreCase)).SingleOrDefault();
+
+            StudentAdviser studentAdviser = new StudentAdviser();
+            if (student != null)
+            {
+                studentAdviser.StudentId = student.Id;
+                studentAdviser.TeacherId = teacherId;
+            }
+
+            _context.StudentAdviser.Add(studentAdviser);
+                _context.SaveChanges();
+        }
+
+        public void AddStudentCourse(string userName, int courseId)
+        {
+            var student = _context.Student.Where(p => String.Equals(p.UserName, userName, StringComparison.CurrentCultureIgnoreCase)).SingleOrDefault();
+            var CourseMaxStudent = _context.StudentCourse.Where(x=> x.CourseId == courseId).Count();
+            var course = _context.Course.FirstOrDefault(x => x.Id == courseId);
+            StudentAdviser studentCourse = new StudentAdviser();
+            if (student != null)
+            {
+                if (CourseMaxStudent > course.MaxStudent)
+                {
+                    throw new BadRequestException("Course is full");
+                }  
+                else if (course.TimeStar > DateTime.Now)
+                {
+
+                }
+                studentCourse.StudentId = student.Id;
+                studentCourse.TeacherId = courseId;
+            }
+
+            _context.StudentAdviser.Add(studentCourse);
+            _context.SaveChanges();
+        }
     }
 }
 

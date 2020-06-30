@@ -16,11 +16,10 @@ namespace MyProject.Models.Dto
         public string Name { get; set;}
         public string gender { get; set;}
         public DateTime DateOfBirth { get; set;}
-        public string express { get; set;}
+        public string address { get; set;}
         public string Point { get; set;}
         public bool? IsDelete { get; set;}
-        public int? CreateUser { get; set; }
-        public int? ModifyUser { get; set; }
+        public string UserName { get; set; }
 
     }
 }

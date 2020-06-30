@@ -29,7 +29,7 @@ namespace MyProject.Data.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "express",
+                name: "address",
                 table: "AspNetUsers",
                 nullable: true);
 
@@ -68,7 +68,7 @@ namespace MyProject.Data.Migrations
                     Name = table.Column<string>(nullable: true),
                     gender = table.Column<string>(nullable: true),
                     DateOfBirth = table.Column<DateTime>(nullable: false),
-                    express = table.Column<string>(nullable: true),
+                    address = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -102,7 +102,7 @@ namespace MyProject.Data.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "express",
+                name: "address",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(

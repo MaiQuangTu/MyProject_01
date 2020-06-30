@@ -24,7 +24,7 @@ namespace MyProject.Data.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "express",
+                name: "address",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
@@ -52,7 +52,7 @@ namespace MyProject.Data.Migrations
                     Name = table.Column<string>(nullable: true),
                     gender = table.Column<string>(nullable: true),
                     DateOfBirth = table.Column<DateTime>(nullable: false),
-                    express = table.Column<string>(nullable: true),
+                    address = table.Column<string>(nullable: true),
                     Point = table.Column<string>(nullable: true),
                     IsDelete = table.Column<bool>(nullable: true)
                 },
@@ -101,7 +101,7 @@ namespace MyProject.Data.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "express",
+                name: "address",
                 table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: true);

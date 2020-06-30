@@ -300,7 +300,7 @@ namespace MyProject.Data.Migrations
                     b.Property<string>("Point")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("express")
+                    b.Property<string>("address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("gender")
@@ -336,7 +336,7 @@ namespace MyProject.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("express")
+                    b.Property<string>("address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("gender")

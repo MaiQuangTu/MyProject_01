@@ -10,7 +10,7 @@ namespace MyProject.Models.ModeInput
         public string Name { get; set; }
         public string gender { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string express { get; set; }
+        public string address { get; set; }
         public string Point { get; set; }
         public bool? IsDelete { get; set; }
     }

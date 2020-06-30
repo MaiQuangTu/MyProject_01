@@ -12,5 +12,9 @@ namespace MyProject.Services.Interface
 
         public void InsertStudent(StudentInputInsert model, int userId);
         public void UpdateStudent(StudentInputUpdate model, int userId);
+        //
+
+        public void AddStudentAdviser(string userName, int teacherId);
+        public void AddStudentCourse(string userName, int courseId);
     }
 }
